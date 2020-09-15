@@ -25,10 +25,16 @@ public class ThreadedBinaryTreeDemo {
         threadedBinaryTree.threadedNodes();
 
         //测试中序线索化
-        HeroNode leftNode = node5.getLeft();
+     /*   HeroNode leftNode = node5.getLeft();
         HeroNode rightNode = node5.getRight();
         System.out.println("10号前驱节点测试:" + leftNode);
-        System.out.println("10号后继节点测试:" + rightNode);
+        System.out.println("10号后继节点测试:" + rightNode);*/
+
+        //当对线索化二叉树后 不能再使用原来的遍历方法
+//        threadedBinaryTree.infixOrder();
+
+        System.out.println("使用线索化的方式 遍历线索化二叉树");
+        threadedBinaryTree.threadedList();
 
     }
 }
@@ -48,6 +54,30 @@ class ThreadedBinaryTree{
     //重载
     public void threadedNodes(){
         this.threadedNodes(root);
+    }
+
+    //遍历线索化二叉树的方法
+    public void threadedList(){
+        //定义一个变量 存储当前遍历的节点 从root开始
+        HeroNode node = root;
+        while( node != null){
+            //循环的 找到leftType== 1的节点 第一个找到的
+            //后面随着遍历而变化 因为当leftType==1的时候 说明该节点是按照线索化处理后的有效节点
+            while(node.getLeftType() == 0){
+                node = node.getLeft();
+            }
+
+            //打印当前节点
+            System.out.println(node);
+            //如果当前节点的右指针指向的是后继节点 就一直输出
+            while(node.getRightType() == 1) {
+                //获取到当前节点的后继节点
+                node = node.getRight();
+                System.out.println(node);
+            }
+            //替换遍历的节点
+            node = node.getRight();
+        }
     }
 
     //对二叉树中序线索化的方法
