@@ -13,6 +13,10 @@ public class HuffmanCode {
 
         System.out.println("压缩后的结果是:" +Arrays.toString(hufumanCodesBytes)+" 长度为："+hufumanCodesBytes.length);
 
+        //测试byteToBitString
+        String s = byteToBitString(true, (byte) 1);
+        System.out.println(s);
+
 
         //如何将数据进行解压(解码)
 //        System.out.println(content.length());
@@ -39,6 +43,64 @@ public class HuffmanCode {
         //发送huffmanCodeBytes 数组*/
 
     }
+
+    //完成数据解压
+    //思路 HuffmanCodeBytes->[-88, -65, -56, -65, -56, -65, -55, 77, -57, 6, -24, -14, -117, -4, -60, -90, 28]
+    //1.将HuffmanCodeBytes转成赫夫曼对应点二进制的字符串字符串 "1010100010111..."
+    //2.赫夫曼对应的二进制的字符串 "1010100010111..." =>对照 赫夫曼编码 重新转成字符串 => "i like like like java do you like a java"
+
+
+    //步骤2
+    //编写一个方法 完成对压缩数据的解码
+
+    /**
+     *
+     * @param huffmanCodes
+     * @param huffmanBytes
+     * @return
+     */
+    private static byte[] decode(Map<Byte,String> huffmanCodes, byte[] huffmanBytes){
+
+
+        return null;
+    }
+
+
+
+
+
+
+    /** 步骤1
+     * 将一个byte 转成一个二进制的字符串
+     * @param b
+     * @param flag 标志是否需要补高位 如果是true表示需要补高位 false表示不补
+     * @return 是该b 对应的二进制字符串 按补码返回
+     */
+    private static String byteToBitString(boolean flag, byte b){
+        //使用一个变量保存 b
+        int temp = b; //将b 转成int
+        //如果是正数 存在补高位的问题
+
+        if (flag){
+            temp |= 256; // 按位与 1 0000 0000    0000 0001
+        }
+
+        String str = Integer.toBinaryString(temp); //返回的是temp对应的二进制补码
+
+        if (flag) {
+            return str.substring(str.length() - 8);
+        } else {
+            return str;
+        }
+    }
+
+
+
+
+
+
+
+
     //使用一个方法 将前面的方法封装起来 便于掉哦用
 
     /**
