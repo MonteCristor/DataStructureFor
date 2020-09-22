@@ -14,8 +14,11 @@ public class HuffmanCode {
         System.out.println("压缩后的结果是:" +Arrays.toString(hufumanCodesBytes)+" 长度为："+hufumanCodesBytes.length);
 
         //测试byteToBitString
-        String s = byteToBitString(true, (byte) 1);
-        System.out.println(s);
+       /* String s = byteToBitString(true, (byte) 1);
+        System.out.println(s);*/
+
+        byte[] sourceBytes = decode(huffmanCodes, hufumanCodesBytes);
+        System.out.println("原来的字符串=" + new String(sourceBytes));
 
 
         //如何将数据进行解压(解码)
@@ -49,31 +52,10 @@ public class HuffmanCode {
     //1.将HuffmanCodeBytes转成赫夫曼对应点二进制的字符串字符串 "1010100010111..."
     //2.赫夫曼对应的二进制的字符串 "1010100010111..." =>对照 赫夫曼编码 重新转成字符串 => "i like like like java do you like a java"
 
-
-    //步骤2
-    //编写一个方法 完成对压缩数据的解码
-
-    /**
-     *
-     * @param huffmanCodes
-     * @param huffmanBytes
-     * @return
-     */
-    private static byte[] decode(Map<Byte,String> huffmanCodes, byte[] huffmanBytes){
-
-
-        return null;
-    }
-
-
-
-
-
-
     /** 步骤1
      * 将一个byte 转成一个二进制的字符串
      * @param b
-     * @param flag 标志是否需要补高位 如果是true表示需要补高位 false表示不补
+     * @param flag 标志是否需要补高位 如果是true表示需要补高位 false表示不补 如果是最后一个字节 无需补高位
      * @return 是该b 对应的二进制字符串 按补码返回
      */
     private static String byteToBitString(boolean flag, byte b){
@@ -95,6 +77,66 @@ public class HuffmanCode {
     }
 
 
+    //步骤2
+    //编写一个方法 完成对压缩数据的解码
+    /**
+     *
+     * @param huffmanCodes 赫夫曼编码表 map
+     * @param huffmanBytes 赫夫曼编码得到的字节数组
+     * @return 原来的字符串对应的数组
+     */
+    private static byte[] decode(Map<Byte,String> huffmanCodes, byte[] huffmanBytes){
+
+        //1.先得到HuffmanBytes 对应的二进制字符串 形式 "1010100010111..."
+        StringBuilder stringBuilder = new StringBuilder();
+        //将byte数组转成二进制的字符串
+        for (int i = 0; i < huffmanBytes.length; i++) {
+            byte b = huffmanBytes[i];
+            //判断是否最后一个字节
+            boolean flag = (i == huffmanBytes.length -1);
+            stringBuilder.append(byteToBitString(!flag, b));
+        }
+//        System.out.println("解码后赫夫曼字节数组对应的二进制字符串="+stringBuilder.toString());
+        //把字符串按照指定的赫夫曼编码进行解码
+        //把赫夫曼编码表进行调换 应为反向查询
+        Map<String, Byte> map = new HashMap<>();
+        for (Map.Entry<Byte, String> entry : huffmanCodes.entrySet()) {
+            map.put(entry.getValue(), entry.getKey());
+        }
+//        System.out.println("map =" + map);
+
+        //创建一个集合 存放byte
+        ArrayList<Byte> list = new ArrayList<>();
+        //i可以理解成索引 扫描stringBuilder
+        for (int i = 0; i < stringBuilder.length();) {
+            int count = 1;//小的计数器
+            boolean flag = true;
+            Byte b = null;
+
+            while (flag) {
+                //1010100010111...
+                //递增的取出key
+                String key = stringBuilder.substring(i, i + count);//i不动 让count移动 指定匹配到一个字符
+                b = map.get(key);
+                if (b == null) {//说明没有匹配到
+                    count++;
+                } else {
+                    //匹配到
+                    flag = false;
+                }
+            }
+            list.add(b);
+            i += count; //i直接移动到 count
+        }
+        //当for循环结束后 list中就存放了所有的字符
+        //把list中的数据放入到byte[] 并返回
+        byte[] b= new byte[list.size()];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = list.get(i);
+        }
+
+        return b;
+    }
 
 
 
@@ -142,7 +184,7 @@ public class HuffmanCode {
         for (byte b: bytes){
             stringBuilder.append(huffmanCodes.get(b));
         }
-//        System.out.println("测试stringBuilder:"+stringBuilder);
+        System.out.println("测试stringBuilder:"+stringBuilder);
         //将得到的str转成byte[]
         //统计返回的 byte[] huffmanCodeBytes 长度
         //一句话 int len = (stringBuilder.length() + 7) / 8;
