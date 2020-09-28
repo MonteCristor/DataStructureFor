@@ -1,39 +1,37 @@
-package com.demo.binarysorttree;
+package com.demo.avl;
 
-public class BinarySortTreeDemo {
+public class AVLTreeDemo {
 
     public static void main(String[] args) {
-        int[] arr = {7,3,10,12,5,1,9,2};
-        BinarySortTree binarySortTree = new BinarySortTree();
-
-        //循环的添加节点到二叉排序树
+        int[] arr = {4,3,6,5,7,8};
+        //创建一个AVLTree对象
+        AVLTree avlTree = new AVLTree();
+        //添加节点
         for (int i = 0; i < arr.length; i++) {
-            binarySortTree.add(new Node(arr[i]));
+            avlTree.add(new Node(arr[i]));
         }
 
-        //中序遍历二叉排序树
-        System.out.println("中序遍历二叉排序树");
-        binarySortTree.infixOrder();
+        //遍历
+        System.out.println("中序遍历");
+        avlTree.infixOrder();
 
-        //测试删除叶子节点
-        binarySortTree.delNode(7);
-        binarySortTree.delNode(3);
-        binarySortTree.delNode(12);
-        binarySortTree.delNode(5);
-        binarySortTree.delNode(2);
-        binarySortTree.delNode(9);
-        binarySortTree.delNode(10);
-//        binarySortTree.delNode(1);
-
-
-        System.out.println("删除节点后");
-        binarySortTree.infixOrder();
-        
+        System.out.println("在没有做平衡处理前~~~");
+        System.out.println("树的高度："+avlTree.getRoot().height());
+        System.out.println("左子树的高度："+avlTree.getRoot().leftHeight());
+        System.out.println("右子树的高度："+avlTree.getRoot().rightHeight());
     }
 }
-//创建二叉排序树
-class BinarySortTree{
+//创建AVL Tree
+class AVLTree{
     private Node root;
+
+    public Node getRoot() {
+        return root;
+    }
+
+    public void setRoot(Node root) {
+        this.root = root;
+    }
 
     //查找要删除的节点
     public Node search(int value){
@@ -158,6 +156,29 @@ class Node{
     Node left;
     Node right;
 
+    //返回左子树的高度
+    public int leftHeight(){
+        if (left == null){
+            return 0;
+        }
+            return left.height();
+
+    }
+
+    //返回右子树的高度
+    public int rightHeight(){
+        if (right == null){
+            return 0;
+        }
+            return right.height();
+
+    }
+
+    //返回 以当前为节点为根节点的树高度
+    public int height(){
+        return Math.max(left == null ? 0 : left.height(),right== null ?0 : right.height())+1;
+    }
+
     //查找要删除的节点
 
     /**
@@ -181,7 +202,7 @@ class Node{
             if (this.right == null){
                 return null;
             }
-           return this.right.search(value);
+            return this.right.search(value);
         }
 
     }
@@ -267,21 +288,3 @@ class Node{
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
